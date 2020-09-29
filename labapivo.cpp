@@ -1,117 +1,246 @@
-﻿
 #include <iostream>
 #include <fstream>
-#include <cstringt.h>
-#include<ctime>
-
 using namespace std;
-class matritza
+
+// шаблонный класс Матрица
+template <typename T>
+class MATRIX
 {
 private:
-	int** mass;
-	int M;
-	int N;
-	
-public:	
-	matritza()
-	{
-		N = M = 0;
-	}
-	matritza(int _M,int _N)
-	{
-		M = _M;
-		N = _N;
-		mass = new int* [M];
-		for (int i = 0; i < M; i++)
-		{
-			mass[i] = new int[N];
-		}
-		for (int i = 0; i < M; i++)
-		{
-			for (int j = 0; j < N; j++)
-			{
-				mass[i][j] = 0;
-			}
-		}
-	}
-	matritza(const matritza& _mass)//создаётся новый объект под который веляется память
-	{
-		M = _mass.M;
-		N = _mass.N;
-		mass = (int**)new int* [M];
-		for (int i = 0; i < M; i++)
-		{
-			mass[i] = (int*) new int[N];
-		}
-		for (int i = 0; i < M; i++)
-		{
-			for (int j = 0; i < N; j++)
-			{
-				mass[i][j] = _mass.mass[i][j];
-			}
-		}
-	} 
-		void Print(const char* Objname)
-		{
-			cout << "Matrix:" << Objname << endl;
-			for (int i = 0; i < M; i++)
-			{
-				for (int j = 0; i < N; j++)
-				{
-					cout << mass[i][j] << "\t";
-					cout << endl;
-				}
-				cout << endl;
-			}
-		}
+    T** M; // матрица
+    int m; // количество строк
+    int n; // количество столбцов
 
-	
-		matritza operator=(const matritza& _mass)
-		{
-			if (M > 0)
-			{
-				for (int i = 0; i < M; i++)
-				{
-					delete[] mass[i];
-				}
-			}
-			if (N > 0)
-			{
-				delete[] mass;
-			}
-			M = _mass.M;
-			N = _mass.N;
-			mass = (int**)new int* [M];
-			for (int i = 0; i < M; i++)
-			{
-				mass[i] = (int*)new int[N];
-			}
-			for (int i = 0; i < M; i++)
-			{
-				for (int j = 0; i < N; j++)
-				{
-					mass[i][j] = _mass.mass[i][j];
-				}
-			}
-			return *this;
-		}
-		~matritza()
-		{
-			if (N > 0)
-			{
-				for (int i = 0; i < M; i++)
-				{
-					delete mass[i];
-				}
-			}
-		}
-		
- void dowland_from_file()
+public:
+    // конструкторы
+    MATRIX()
     {
-      
+        n = m = 0;
+        M = nullptr; // необязательно
+    }
 
-         
-      
+    // конструктор с двумя параметрами
+    MATRIX(int _m, int _n)
+    {
+        m = _m;
+        n = _n;
+
+        // Выделить память для матрицы
+        // Выделить пам'ять для массива указателей
+        M = (T**) new T * [m]; // количество строк, количество указателей
+
+        // Выделить память для каждого указателя
+        for (int i = 0; i < m; i++)
+            M[i] = (T*)new T[n];
+
+        // заполнить массив M нулями
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < n; j++)
+                M[i][j] = 0;
+    }
+
+    // Конструктор копирования - обязательный
+    MATRIX(const MATRIX& _M)
+    {
+        // Создается новый объект для которого виделяется память
+        // Копирование данных *this <= _M
+        m = _M.m;
+        n = _M.n;
+
+        // Выделить память для M
+        M = (T**) new T * [m]; // количество строк, количество указателей
+
+        for (int i = 0; i < m; i++)
+            M[i] = (T*) new T[n];
+
+        // заполнить значениями
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < n; j++)
+                M[i][j] = _M.M[i][j];
+    }
+
+    // методы доступа
+    T GetMij(int i, int j)
+    {
+        if ((m > 0) && (n > 0))
+            return M[i][j];
+        else
+            return 0;
+    }
+
+    void SetMij(int i, int j, T value)
+    {
+        if ((i < 0) || (i >= m))
+            return;
+        if ((j < 0) || (j >= n))
+            return;
+        M[i][j] = value;
+    }
+
+    // метод, выводящий матрицу
+    void Print(const char* ObjName)
+    {
+        cout << "Object: " << ObjName << endl;
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+                cout << M[i][j] << "\t";
+            cout << endl;
+        }
+        cout << "---------------------" << endl << endl;
+    }
+
+    // оператор копирования - обязательный
+    MATRIX operator=(const MATRIX& _M)
+    {
+        if (n > 0)
+        {
+            // освободить память, выделенную ранее для объекта *this
+            for (int i = 0; i < m; i++)
+                delete[] M[i];
+        }
+
+        if (m > 0)
+        {
+            delete[] M;
+        }
+
+        // Копирование данных M <= _M
+        m = _M.m;
+        n = _M.n;
+
+        // Выделить память для M опять
+        M = (T**) new T * [m]; // количество строк, количество указателей
+        for (int i = 0; i < m; i++)
+            M[i] = (T*) new T[n];
+
+        // заполнить значениями
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < n; j++)
+                M[i][j] = _M.M[i][j];
+        return *this;
+    }
+
+    // Деструктор - освобождает память, выделенную для матрицы
+    ~MATRIX()
+    {
+        if (n > 0)
+        {
+            // освободить выделенную память для каждой строки
+            for (int i = 0; i < m; i++)
+                delete[] M[i];
+        }
+
+        if (m > 0)
+            delete[] M;
+    }
+
+    void dowland_from_file()
+    {
+        //Создаем файловый поток и связываем его с файлом
+        ifstream in("input.txt");
+        if (in.is_open())
+
+        {
+            //Если открытие файла прошло успешно
+
+            //Вначале посчитаем сколько чисел в файле
+            int count = 0;// число чисел в файле
+            int temp;//Временная переменная
+
+            while (!in.eof())// пробегаем пока не встретим конец файла eof
+            {
+                in >> temp;//в пустоту считываем из файла числа
+                count++;// увеличиваем счетчик числа чисел
+            }
+
+            //Число чисел посчитано, теперь нам нужно понять сколько
+            //чисел в одной строке
+            //Для этого посчитаем число пробелов до знака перевода на новую строку 
+
+            //Вначале переведем каретку в потоке в начало файла
+            in.seekg(0, ios::beg);
+            in.clear();
+
+            //Число пробелов в первой строчке вначале равно 0
+            int count_space = 0;
+            char symbol;
+            while (!in.eof())//на всякий случай цикл ограничиваем концом файла
+            {
+                //теперь нам нужно считывать не числа, а посимвольно считывать данные
+                in.get(symbol);//считали текущий символ
+                if (symbol == ' ') count_space++;//Если это пробел, то число пробелов увеличиваем
+                if (symbol == '\n') break;//Если дошли до конца строки, то выходим из цикла
+            }
+            //cout << count_space << endl;
+
+            //Опять переходим в потоке в начало файла
+            in.seekg(0, ios::beg);
+            in.clear();
+
+            //Теперь мы знаем сколько чисел в файле и сколько пробелов в первой строке.
+            //Теперь можем считать матрицу.
+
+            int m = count / (count_space + 1);//число строк
+            int n = count_space + 1;//число столбцов на единицу больше числа пробелов
+            T** x;
+            x = (T**) new T * [m];
+            for (int i = 0; i < m; i++) x[i] = (T*) new T[n];
+
+            //Считаем матрицу из файла
+            for (int i = 0; i < m; i++)
+                for (int j = 0; j < n; j++)
+                    in >> x[i][j];
+
+            //Выведем матрицу
+            for (int i = 0; i < m; i++)
+            {
+                for (int j = 0; j < n; j++)
+                    cout << x[i][j] << "\t";
+                cout << "\n";
+            }
+
+            for (int i = 0; i < m; i++) delete[] x[i];
+            delete[] x;
+
+            in.close();//под конец закроем файла
+        }
+        else
+        {
+            //Если открытие файла прошло не успешно
+            cout << "Файл не найден.";
+        }
+
+        system("pause");
+
     }
 
 };
+
+void main()
+{
+    // тест для класса MATRIX
+    MATRIX<int> M(2, 3);
+    M.Print("M");
+
+    // Заполнить матрицу значеннями по формуле
+    int i, j;
+    for (i = 0; i < 2; i++)
+        for (j = 0; j < 3; j++)
+            M.SetMij(i, j, i + j);
+
+    M.Print("M");
+
+    MATRIX<int> M2 = M; // вызов конструктора копирования
+    M2.Print("M2");
+
+    MATRIX<int> M3; // вызов оператора копирования - проверка
+    M3 = M;
+    M3.Print("M3");
+
+    MATRIX<int> M4;
+    M4 = M3 = M2 = M; // вызов оператора копирования в виде "цепочки"
+    M4.Print("M4");
+   
+    M.dowland_from_file();
+}
