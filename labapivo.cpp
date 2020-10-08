@@ -69,6 +69,120 @@ MATRITSA::~MATRITSA()
 
 }
     
+bool MATRITSA::operator==(MATRITSA& _M)
+{	
+		//Перегрузка оператора сравнения осуществляется поэлементный сравнением матриц (соответствующих индексов)
+		//\_M ссылка на вторую матрицу в сравнении на равенство
+		//\return возвращает true, если матрицы равны и false в ином случае
+	
+	if (this->str != _M.stroki() || this->stlb != _M.stolbtsy())
+	{
+		return false;
+	}
+
+	for (int i = 0; i < this->str; i++)
+	{
+		for (int k = 0; k < this->stlb; k++)
+		{
+			if (this->M[i][k] != _M.M[i][k])
+			{
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+ostream& operator<<(ostream& out, const MATRITSA& matr)
+{
+
+		//Перегрузка потокового оператора для вывода матрицы в консоль
+		//\return объект типа ostream, который выводится на экран
+		//\param out ссылка на объект типа ostream, который выводится на экран
+		//\param MATRITSA матрица, которая выводится на экран
+	
+	cout << "-----------\n";
+	for (int i = 0; i < matr.str; i++)
+	{
+		for (int k = 0; k < matr.stlb; k++)
+			out << matr.M[i][k] << "\t";
+
+		out << endl << endl;
+	}
+
+	return out;
+}
+
+istream& operator>>(istream& in, MATRITSA& matr)
+{
+
+		//Перегрузка потокового оператора для ввода матрицы вручную
+		//\param in объект типа istream, который принимает в себя значения, считываемые из клавиатуры при вводе в консоли
+		//\param MATRITSA матрица, элементы которой вводятся
+		//\return объект типа istream, который заполняет матрицу вводёнными числами
+	
+	cout << "Fill in the matrix: \n";
+	for (int i = 0; i < matr.str; i++) {
+		for (int k = 0; k < matr.stlb; k++)
+			in >> matr.M[i][k];
+	}
+	return in;
+}
+void MATRITSA::incPr()
+{
+	//Префиксный инкремент увеличивает каждый элемент матрицы на единицу
+	for (int i = 0; i < str; i++)
+	{
+		for (int k = 0; k < stlb; k++)
+		{
+			++M[i][k];
+		}
+
+	}
+}
+
+
+void MATRITSA::incPo()
+{
+	//Постфиксный инкремент увеличивает каждый элемент матрицы на единицу
+	for (int i = 0; i < str; i++)
+	{
+		for (int k = 0; k < stlb; k++)
+		{
+			M[i][k]++;
+		}
+
+	}
+}
+
+
+void MATRITSA::dicPo()
+{
+   //Постфиксный декремент уменьшает каждый элемент матрицы на единицу
+	for (int i = 0; i < str; i++)
+	{
+		for (int k = 0; k < stlb; k++)
+		{
+			M[i][k]--;
+		}
+
+	}
+}
+
+void MATRITSA::dicPr()
+{
+	//Префиксный декремент уменьшает каждый элемент матрицы на единицу
+	for (int i = 0; i < str; i++)
+	{
+		for (int k = 0; k < stlb; k++)
+		{
+			--M[i][k];
+		}
+
+	}
+}
+
     void dowland_from_file()
     {
         //Создаем файловый поток и связываем его с файлом
