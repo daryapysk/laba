@@ -1,44 +1,73 @@
+#include "m1.h"
 #include <iostream>
 #include <fstream>
+#include <sstream
 using namespace std;
 
-// шаблонный класс Матрица
-template <typename T>
-class MATRIX
+
+    MATRITSA::MATRITSA()
+{ 
+	//Конструктор по умолчанию, который устанавливает начальное положение объекта. Не принимает параметров 
+    //str - строки
+    //stlb - столбцы    
+    str = stlb = 0;
+    M = nullptr; 
+}
+
+MATRITSA::MATRITSA(int str_p, int stlb_p)
 {
-private:
-    T** M; // матрица
-    int m; // количество строк
-    int n; // количество столбцов
+	//Конструктор принимает количество строк и столбцов матрицы и заполняет их случайными числами в диапазоне от -50 до 50
+	
+	str = str_p;
+	stlb = stlb_p;
 
-public:
-    // конструкторы
-    MATRIX()
-    {
-        n = m = 0;
-        M = nullptr; // необязательно
-    }
+	M = new int* [str];
+	for (int i = 0; i < str; i++)
+		M[i] = new int[stlb];
 
-    // конструктор с двумя параметрами
-    MATRIX(int _m, int _n)
-    {
-        m = _m;
-        n = _n;
+	for (int i = 0; i < str; i++)
+		for (int k = 0; k < stlb; k++)
+			M[i][k] = rand() % 100 - 50;
 
-        // Выделить память для матрицы
-        // Выделить пам'ять для массива указателей
-        M = (T**) new T * [m]; // количество строк, количество указателей
+	
+}
 
-        // Выделить память для каждого указателя
-        for (int i = 0; i < m; i++)
-            M[i] = (T*)new T[n];
+MATRITSA::MATRITSA(const MATRITSA& _M)
+{
+	//Конструктор копирования создаёт новый объект и копирует в него другой, избегая проблем с памятью
+		//_M ссылка на второй объект копирования
+	
+	str = _M.str;
+	stlb = _M.stlb;
 
-        // заполнить массив M нулями
-        for (int i = 0; i < m; i++)
-            for (int j = 0; j < n; j++)
-                M[i][j] = 0;
-    }
+	M = new int* [str];
+	for (int i = 0; i < str; i++)
+		M[i] = new int[stlb];
 
+	for (int i = 0; i < str; i++)
+		for (int k = 0; k < stlb; k++)
+			M[i][k] = _M.M[i][k];
+
+	
+}
+
+MATRITSA::~MATRITSA()
+{
+	//Деструктор освобождает память, выделенную для матрицы. Не принимает параметров
+	if (str > 0)
+	{
+		for (int i = 0; i < str; i++)
+		{
+			delete[]M[i];
+		}
+	}
+
+	if (stlb > 0)
+	{
+		delete[]M;
+	}
+
+}
     // Конструктор копирования - обязательный
     MATRIX(const MATRIX& _M)
     {
