@@ -183,6 +183,138 @@ void MATRITSA::dicPr()
 	}
 }
 
+void MATRITSA::create()
+{ 
+	//для создание матрицы с заданием параметров пользователем
+	cout << "Enter coloms: " << endl;
+	cin >> stlb;
+	cout << "Enter lines: " << endl;
+	cin >> str;
+	cout << "col= " << stlb << " lines= " << str << endl;
+	for (int i = 0; i < str; i++)
+	{
+		M[i] = new int[stlb];
+		for (int k = 0; k < stlb; k++)
+		{
+			M[i][k] = rand() % 10;
+		}
+	}
+}
+
+void MATRITSA::print()
+{
+	//для вывода матрицы
+	for (int i = 0; i < str; i++)
+	{
+		for (int k = 0; k < stlb; k++)
+		{
+			cout << M[i][k] << "\t";
+		}
+		cout << endl;
+	}
+}
+
+void MATRITSA::resize(int nstlb, int nstr)
+{
+	int** Mn = new int* [nstr];
+	for (int i = 0; i < nstr; i++)
+		Mn[i] = new int[nstlb];
+
+	if (nstlb < stlb || nstr < str)
+	{
+		for (int i = 0; i < nstr; i++)
+		{
+			for (int k = 0; k < nstlb; k++)
+			{
+				Mn[i][k] = M[i][k];
+			}
+		}
+
+	}
+	else
+	{
+		for (int i = 0; i < nstr; i++)
+		{
+			if (i < str)
+			{
+				for (int k = 0; k < nstlb; k++)
+				{
+					if (k < stlb)
+					{
+						Mn[i][k] = M[i][k];
+					}
+					else Mn[i][k] = rand() % 10;
+				}
+			}
+			else
+				for (int k = 0; k < nstlb; k++)
+				{
+					Mn[i][k] = rand() % 10;
+				}
+		}
+
+	}
+
+	for (int i = 0; i < nstr; i++)
+	{
+		for (int k = 0; k < nstlb; k++)
+		{
+			cout << Mn[i][k] << "\t";
+		}
+		cout << endl;
+	}
+	this->M = Mn;
+	this->stlb = nstlb;
+	this->str = nstr;
+	delete[] Mn;
+}
+
+MATRITSA MATRITSA::SubMATRITSA(unsigned int str, unsigned int stlb)
+{
+	
+		// Новая матрицы получается путём "обрезания" данной. Элементы и индексы сохраняются, если они соответсвуют новым заданным размерам
+		//\return объект матрицы, которая является подматрицей исходной матрицы
+	
+	if (str > this->str || stlb > this->stlb || str <= 0 || stlb <= 0)
+		throw "Index out of bounds!";
+
+	MATRITSA newMATRITSA(str, stlb);
+
+	for (int i = 0; i < str; i++)
+		for (int j = 0; j < stlb; j++)
+			newMATRITSA[i][j] = M[i][j];
+
+	return newMATRITSA;
+}
+
+
+void MATRITSA::Transpon(const MATRITSA& _M)
+{
+	int ctlb = _M.stlb;
+	int str = _M.str;
+	int** Mtr = new int* [str];
+	for (int i = 0; i < stlb; i++)
+		Mtr[i] = new int[stlb];
+
+	for (int i = 0; i < str; i++)
+	{
+		for (int k = 0; k < stlb; k++)
+		{
+			Mtr[i][k] = _M.M[k][i];
+		}
+	}
+
+	for (int i = 0; i < str; i++)
+	{
+		for (int k = 0; k < stlb; k++)
+		{
+			cout << Mtr[i][k] << "\t";
+		}
+		cout << endl;
+	}
+}
+
+
     void dowland_from_file()
     {
         //Создаем файловый поток и связываем его с файлом
@@ -263,32 +395,3 @@ void MATRITSA::dicPr()
 
     }
 
-};
-
-void main()
-{
-    // тест для класса MATRIX
-    MATRIX<int> M(2, 3);
-    M.Print("M");
-
-    // Заполнить матрицу значеннями по формуле
-    int i, j;
-    for (i = 0; i < 2; i++)
-        for (j = 0; j < 3; j++)
-            M.SetMij(i, j, i + j);
-
-    M.Print("M");
-
-    MATRIX<int> M2 = M; // вызов конструктора копирования
-    M2.Print("M2");
-
-    MATRIX<int> M3; // вызов оператора копирования - проверка
-    M3 = M;
-    M3.Print("M3");
-
-    MATRIX<int> M4;
-    M4 = M3 = M2 = M; // вызов оператора копирования в виде "цепочки"
-    M4.Print("M4");
-   
-    M.dowland_from_file();
-}
