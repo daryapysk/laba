@@ -313,6 +313,247 @@ void MATRITSA::Transpon(const MATRITSA& _M)
 		cout << endl;
 	}
 }
+bool squareT(const MATRITSA& matr)
+{
+	
+		// функция Определяет, является ли матрица квадратной, путём сравнения количества строк и столбцов
+		
+	if (matr.stlb == matr.str)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool diagonalT(const MATRITSA& matr, bool square)
+{
+	//  функция Определяет, является ли матрица диагональной, путём сравнения количества нулей в матрице
+		// матрица называется диагональной, если она квадратная и все её элементы, кроме главной диагонали, равны нулю
+		
+	if (!square)
+	{
+		return false;
+	}
+	else
+	{
+		int zeros = 0;
+		for (int i = 0; i < matr.str; i++)
+		{
+			for (int k = 0; k < matr.stlb; k++)
+			{
+				if (i == k)
+				{
+					continue;
+				}
+
+				if (matr.M[i][k] == 0)
+				{
+					zeros++;
+				}
+			}
+		}
+
+		if (zeros == matr.str * matr.stlb - matr.stlb)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+}
+
+bool identityT(const MATRITSA& matr, bool diagonal)
+{
+	
+		// функция Определяет, является ли матрица единичной, путём сравнения единиц в диагональной матрице
+		// матрица называется единичной, если она диагональная и все её элементы на главной диагонали равны единице
+		
+	if (diagonal)
+	{
+		int ones = 0;
+		int k = 0;
+		for (int i = 0; i < matr.str; i++)
+		{
+			if (matr.M[i][k] == 1)
+			{
+				ones++;
+			}
+			k++;
+		}
+
+		if (ones == matr.stlb)
+		{
+			return true;
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool nullT(const MATRITSA& matr)
+{
+
+		// функция Определяет, является ли матрица нулевой, путём сравнения количества нулей в матрице
+		//матрица называется нулевой, если все её равны нулю
+		
+	for (int i = 0; i < matr.str; i++)
+	{
+		for (int k = 0; k < matr.stlb; k++)
+		{
+			if (matr.M[i][k] != 0)
+			{
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+bool symmetricT(const MATRITSA& matr, bool square)
+{
+	
+		// функция Определяет, является ли матрица симметричной, путём сравнения елементов с обратными индексами
+		// матрица называется симметричной, если транспанированная матрица равна исходной
+		
+	if (square)
+	{
+		for (int i = 0; i < matr.str; i++)
+		{
+			for (int j = 0; j < matr.stlb; j++)
+			{
+				if (i == j)
+				{
+					continue;
+				}
+
+				if (matr.M[j][i] != matr.M[i][j])
+				{
+					return false;
+				}
+			}
+		}
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool upTriangleT(const MATRITSA& matr, bool square)
+{
+	// функция Определяет, является ли матрица верхней треугольной, путём сравнения елементов выше главой диагонали с нулём
+		//матрица называется верхней треугольной, если её элементы ниже главной диагонали равны нулю
+		
+	if (square)
+	{
+		for (int i = 0; i < matr.str; i++)
+		{
+			for (int j = 0; j < matr.stlb; j++)
+			{
+				if (i > j&& matr.M[i][j] != 0)
+				{
+					return false;
+				}
+			}
+		}
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool downTriangleT(const MATRITSA& matr, bool square)
+{
+	// 9 функция Определяет, является ли матрица нижней треугольной, путём сравнения елементов ниже главой диагонали с нулём
+		// матрица называется верхней треугольной, если её элементы выше главной диагонали равны нулю
+		
+	if (square)
+	{
+		for (int i = 0; i < matr.str; i++)
+		{
+			for (int j = 0; j < matr.stlb; j++)
+			{
+				if (i < j && matr.M[i][j] != 0)
+				{
+					return false;
+				}
+			}
+		}
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
+}
+
+string MATRITSA::getType(const MATRITSA& matr)
+{
+	
+	string result = "";
+	bool square = squareT(matr);
+	bool diagonal = diagonalT(matr, square);
+	bool identity = identityT(matr, diagonal);
+	bool nullM = nullT(matr);
+	bool symmetricM = symmetricT(matr, square);
+	bool upTriangle = upTriangleT(matr, square);
+	bool downTriangle = downTriangleT(matr, square);
+
+	if (downTriangle && !nullM)
+	{
+		result += "Down Triangle ";
+	}
+	else if (upTriangle && !nullM)
+	{
+		result += "UpperTriangle ";
+	}
+
+	if (symmetricM && !diagonal)
+	{
+		result += "Symmetric ";
+	}
+
+	if (identity)
+	{
+		result += "Identity ";
+	}
+
+	if (nullM)
+	{
+		result = "Null ";
+	}
+
+	if (diagonal && !nullM && !identity)
+	{
+		result += "Diagonal ";
+	}
+
+	if (square && !diagonal && !identity && !symmetricM && !downTriangle && !upTriangle)
+	{
+		result += "Square ";
+	}
+
+	if (result == "")
+	{
+		result = "None";
+	}
+
+	return "Matrix type is " + result + "\n";
+}
 
 
     void dowland_from_file()
