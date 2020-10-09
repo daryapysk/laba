@@ -20,10 +20,10 @@ public:
 	int* operator[](unsigned int index);
 	void resize(int nstlb, int nstr);
 	void loadFromFile(const string& filepath);
-	MATRITSA SubMATRITSA(unsigned int str, unsigned int stlb);
+	MATRITSA subMATRITSA(unsigned int str, unsigned int stlb);
 	string getType(const MATRITSA& matr);
 	
-	void Transpon(const MATRITSA& _M);
+	void transpon(const MATRITSA& _M);
 	int stroki();
 	int stolbtsy();
 	friend bool squareT(const MATRITSA& matr);
