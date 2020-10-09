@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <string>
 using namespace std;
 
@@ -19,10 +19,9 @@ public:
 	bool operator==(MATRITSA& _M);
 	int* operator[](unsigned int index);
 	void resize(int nstlb, int nstr);
-	void loadFromFile(const string& filepath);
+	void dowland_from_file();
 	MATRITSA subMATRITSA(unsigned int str, unsigned int stlb);
 	string getType(const MATRITSA& matr);
-	
 	void transpon(const MATRITSA& _M);
 	int stroki();
 	int stolbtsy();
