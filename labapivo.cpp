@@ -222,6 +222,8 @@ void MATRITSA::print()
 void MATRITSA::resize(int nstlb, int nstr)
 {
 	// изменение размера матрицы
+	//nstlb - новое число столбцов
+	//nstr - новое число строк
 	int** Mn = new int* [nstr];
 	for (int i = 0; i < nstr; i++)
 		Mn[i] = new int[nstlb];
@@ -275,7 +277,7 @@ void MATRITSA::resize(int nstlb, int nstr)
 	delete[] Mn;
 }
 
-MATRITSA MATRITSA::SubMATRITSA(unsigned int str, unsigned int stlb)
+MATRITSA MATRITSA::subMATRITSA(unsigned int str, unsigned int stlb)
 {
 	        // для выделения подматрицы
 		// Новая матрицы получается путём "обрезания" данной. Элементы и индексы сохраняются, если они соответсвуют новым заданным размерам
@@ -294,7 +296,7 @@ MATRITSA MATRITSA::SubMATRITSA(unsigned int str, unsigned int stlb)
 }
 
 
-void MATRITSA::Transpon(const MATRITSA& _M)
+void MATRITSA::transpon(const MATRITSA& _M)
 {
 	//транспонировка матрицы
 	int ctlb = _M.stlb;
